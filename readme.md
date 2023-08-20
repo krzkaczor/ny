@@ -36,6 +36,12 @@ ny vitest # executes node_modules/.bin binary eq. to: yarn vitest
 
 ## Installation
 
+## Brew
+
+```sh
+brew install krzkaczor/tap/ny
+```
+
 ### Download binary
 
 Get the newest release from [releases page](https://github.com/krzkaczor/ny/releases).
