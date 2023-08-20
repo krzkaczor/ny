@@ -49,19 +49,3 @@ fn main() -> Result<()> {
 
     Ok(())
 }
-
-// FIX TypeScript support
-//   * @ngneat/falso <- it has types!
-//   * "ny add @trpc/server @trpc/client"
-// gracefully handler error while downloading typings
-// @todo: push to brew repository
-// improve error messages:
-// * "ny test" when executed not in js repo returns: "Error: Couldn't find any lockfile inside "/Users/krzkaczor/Workspace/Personal/ny" or any of its parents.". Probably it should say that "test" was treated as task name.
-// * "ny not-existing-task" returns:
-//"Error: Couldn't run command: dupa
-// Caused by:
-// No such file or directory (os error 2)"
-// should omit caused by part probably
-
-// new features:
-// * DID YOU MEAN for typod tasks?
