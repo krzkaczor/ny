@@ -52,7 +52,7 @@ In the world of JavaScript, there's a fun mix of package managers - npm, yarn, p
 
 And here's the kicker: 🗽NY is snappier! Especially when running package scripts (like when you type `yarn test``). It's written in Rust and it zips through tasks about ~200ms faster by skipping spawning node process just to parse package.json. Sweet, huh?
 
-Main sources of inspiration was [antfu/ni](https://github.com/antfu/ni) (but it's written in JS) and [egoist/dum](https://github.com/egoist/dum) (but it's only a task runner).
+Main sources of inspiration were [antfu/ni](https://github.com/antfu/ni) (but it's written in JS) and [egoist/dum](https://github.com/egoist/dum) (but it's only a task runner).
 
 ### TypeScript support
 
@@ -60,7 +60,7 @@ If `ny` detects that it's running in TypeScript enabled package, it will attempt
 
 ### Roadmap & contributing
 
-Have a look at open issues. Feel free to work on any of them but first let us know via a comment to avoid doubling the work. Simply upvote issues to help us with prioritization.
+Have a look at [open issues](https://github.com/krzkaczor/ny/issues?q=is:issue+is:open+sort:updated-desc). Feel free to work on any of them but first let us know via a comment to avoid doubling the work. Simply upvote issues to help us with prioritization.
 
 ### Logo
 
