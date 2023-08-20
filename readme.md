@@ -36,6 +36,10 @@ ny vitest # executes node_modules/.bin binary eq. to: yarn vitest
 
 ## Installation
 
+### Download binary
+
+Get the newest release from [releases page](https://github.com/krzkaczor/ny/releases).
+
 ### Build from source
 
 ```
