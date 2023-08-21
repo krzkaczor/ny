@@ -60,7 +60,7 @@ target/release/ny # copy the binary to your bin directory or simply alias it
 
 In the world of JavaScript, there's a fun mix of package managers - npm, yarn, pnpm. Pick your poison. Programmers often switch between projects that use different PMs multiple times a day. Did you just typed `yarn` when the project uses `npm`? Well too bad -- you've wasted couple of seconds again. With 🗽NY, there's no guesswork. Just type `ny` and it picks the right manager for you. Handy, right?
 
-And here's the kicker: 🗽NY is snappier! Especially when running package scripts (like when you type `yarn test``). It's written in Rust and it zips through tasks about ~200ms faster by skipping spawning node process just to parse package.json. Sweet, huh?
+And here's the kicker: 🗽NY is snappier! Especially when running package scripts (like when you type `yarn test`). It's written in Rust and it zips through tasks about ~200ms faster by skipping spawning node process just to parse package.json. Sweet, huh?
 
 Main sources of inspiration were [antfu/ni](https://github.com/antfu/ni) (but it's written in JS) and [egoist/dum](https://github.com/egoist/dum) (but it's only a task runner).
 
