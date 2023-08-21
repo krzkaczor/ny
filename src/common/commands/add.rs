@@ -7,7 +7,7 @@ pub fn add(
     dev: bool,
     workspace_root: bool,
     packages: &[String],
-    verbose: bool,
+    silence_stdout: bool,
 ) -> Result<()> {
     let packages_refs: Vec<_> = packages.iter().map(|s| s.as_str()).collect();
 
@@ -40,7 +40,8 @@ pub fn add(
                 packages_refs,
             ),
             None,
-            verbose,
+            true,
+            silence_stdout,
         ),
         Agent::Yarn => executor.execute(
             "yarn",
@@ -51,7 +52,8 @@ pub fn add(
                 packages_refs,
             ),
             None,
-            verbose,
+            true,
+            silence_stdout,
         ),
         Agent::Pnpm => executor.execute(
             "pnpm",
@@ -62,7 +64,8 @@ pub fn add(
                 packages_refs,
             ),
             None,
-            verbose,
+            true,
+            silence_stdout,
         ),
     }
 }
@@ -82,6 +85,8 @@ mod tests {
             "npm",
             vec_of_strings!("install", "packageA", "packageB"),
             None,
+            true,
+            false,
         );
 
         let result = add(
@@ -104,6 +109,8 @@ mod tests {
             "npm",
             vec_of_strings!("install", "packageA", "packageB"),
             None,
+            true,
+            false,
         );
 
         let result = add(
@@ -126,6 +133,8 @@ mod tests {
             "yarn",
             vec_of_strings!("add", "-D", "packageA", "packageB"),
             None,
+            true,
+            false,
         );
 
         let result = add(
@@ -148,6 +157,8 @@ mod tests {
             "yarn",
             vec_of_strings!("add", "-D", "-W", "packageA", "packageB"),
             None,
+            true,
+            false,
         );
 
         let result = add(
@@ -170,6 +181,8 @@ mod tests {
             "pnpm",
             vec_of_strings!("add", "-D", "packageA", "packageB"),
             None,
+            true,
+            false,
         );
 
         let result = add(
@@ -192,6 +205,8 @@ mod tests {
             "pnpm",
             vec_of_strings!("add", "-D", "-w", "packageA", "packageB"),
             None,
+            true,
+            false,
         );
 
         let result = add(

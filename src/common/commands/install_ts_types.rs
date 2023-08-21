@@ -47,7 +47,7 @@ pub fn install_ts_types(
             true,
             workspace_root,
             &packages_to_install,
-            false,
+            true, // silence output of PM's add command. The command itself is still printed.
         )?;
     }
 
@@ -224,6 +224,8 @@ mod tests {
             "npm",
             vec_of_strings!["install", "--save-dev", "@types/package-a"],
             None,
+            true,
+            true,
         );
         let agent = Agent::Npm;
 
