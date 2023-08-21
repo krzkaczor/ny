@@ -37,7 +37,7 @@ fn main() -> Result<()> {
             dev,
             workspace_root,
         }) => {
-            add(&executor, &agent, dev, workspace_root, &packages, true)?;
+            add(&executor, &agent, dev, workspace_root, &packages, false)?;
             if check_if_ts_repo(&fs, &cwd) {
                 install_ts_types(&executor, &fs, &agent, &cwd, &packages, workspace_root)
             } else {

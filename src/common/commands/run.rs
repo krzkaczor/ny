@@ -27,7 +27,13 @@ pub fn run(
 
         println!("{}", format!("$ {}", script).dimmed());
 
-        executor.execute("sh", &["-c", &script], Some(bin_path), false)
+        executor.execute(
+            "sh",
+            &["-c", &script],
+            Some(bin_path),
+            false, // do not print command as it's quite odd to see "sh -c <script>"
+            false, // do not silence output
+        )
     } else {
         let program = task;
         println!("{}", format!("$ {}", program).dimmed());
@@ -36,7 +42,8 @@ pub fn run(
             program,
             extra_args.unwrap_or_default(),
             Some(bin_path),
-            false,
+            false, // do not print command as it's quite odd to see "sh -c <script>"
+            false, // do not silence output
         )
     }
 }
@@ -115,6 +122,8 @@ mod tests {
             "sh",
             vec_of_strings!("-c", r#"mocha "*.ts" --no-timeout --bail"#),
             Some("/project/node_modules/.bin:/node_modules/.bin:".to_string()),
+            false,
+            false,
         );
         let mut mock_fs = MockFilesystem::new();
         expect_file(
@@ -142,6 +151,8 @@ mod tests {
             "mocha",
             vec_of_strings!("--help"),
             Some("/project/node_modules/.bin:/node_modules/.bin:".to_string()),
+            false,
+            false,
         );
         let mut mock_fs = MockFilesystem::new();
         expect_file(

@@ -11,7 +11,8 @@ pub trait Executor {
         program: &str,
         args: &[&'a str],
         extra_path: Option<String>,
-        verbose: bool,
+        verbose: bool,        // print out the command being executed
+        silence_stdout: bool, // silence "regular" output, still print out errors
     ) -> Result<()>;
 }
 
@@ -23,6 +24,7 @@ impl Executor for RealExecutor {
         args: &[&str],
         extra_path: Option<String>,
         verbose: bool,
+        silence_stdout: bool,
     ) -> Result<()> {
         if verbose {
             println!("{}", format!("$ {} {}", program, args.join(" ")).dimmed());
@@ -35,7 +37,7 @@ impl Executor for RealExecutor {
             let current_path = std::env::var("PATH").unwrap_or_else(|_| "".to_string());
             cmd_builder.env("PATH", extra_env + ":" + &current_path);
         }
-        if !verbose {
+        if silence_stdout {
             cmd_builder.stdout(std::process::Stdio::null());
         }
 
@@ -60,15 +62,23 @@ pub fn expect_execute_once(
     program: &str,
     args: Vec<String>,
     extra_path: Option<String>,
+    verbose: bool,
+    silence_stdout: bool,
 ) {
     let program = program.to_owned();
     mock_executor
         .expect_execute()
         .times(1)
-        .withf(move |_program, _args, _extra_path, _verbose| {
-            _program == program && _args == args && _extra_path == &extra_path
-        })
-        .returning(|_, _, _, _| Ok(()));
+        .withf(
+            move |_program, _args, _extra_path, _verbose, _silence_stdout| {
+                _program == program
+                    && _args == args
+                    && _extra_path == &extra_path
+                    && _verbose == &verbose
+                    && _silence_stdout == &silence_stdout
+            },
+        )
+        .returning(|_, _, _, _, _| Ok(()));
 }
 
 #[cfg(test)]
@@ -78,7 +88,7 @@ mod tests {
     #[test]
     fn test_execute() {
         let executor = RealExecutor {};
-        let result = executor.execute("sh", &["-c", "true"], None, false);
+        let result = executor.execute("sh", &["-c", "true"], None, false, false);
         assert!(result.is_ok());
     }
 }
