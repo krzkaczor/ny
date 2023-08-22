@@ -42,17 +42,9 @@ ny vitest # executes node_modules/.bin binary eq. to: yarn vitest
 brew install krzkaczor/tap/ny
 ```
 
-### Download binary
+### Download binary for Linux / Mac Os X
 
 Get the newest release from [releases page](https://github.com/krzkaczor/ny/releases).
-
-### Build from source
-
-```
-git clone https://github.com/krzkaczor/ny.git
-cargo build --release
-target/release/ny # copy the binary to your bin directory or simply alias it
-```
 
 ## Dive deeper
 
