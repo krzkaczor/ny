@@ -36,6 +36,14 @@ ny vitest # executes node_modules/.bin binary eq. to: yarn vitest
 
 ## Installation
 
+## Tea
+
+[Tea](http://tea.xyz/) is a Homebrew successor and recommended way of installing NY.
+
+```sh
+tea ny
+```
+
 ## Brew
 
 ```sh
