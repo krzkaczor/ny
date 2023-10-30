@@ -31,7 +31,13 @@ pub enum Commands {
         #[arg(required = true)]
         packages: Vec<String>,
         /// Install as dev dependency
-        #[arg(short, short_alias = 'D', long, default_value_t = false)]
+        #[arg(
+            short,
+            alias = "save-dev",
+            short_alias = 'D',
+            long,
+            default_value_t = false
+        )]
         dev: bool,
         /// Add root workspace dependency
         #[arg(short, short_alias = 'W', long, default_value_t = false)]
@@ -137,6 +143,34 @@ mod tests {
             Some(Commands::Run {
                 task: "mocha".to_string(),
                 extra_args: vec_of_strings!["--", "--help"]
+            })
+        );
+    }
+
+    #[test]
+    fn add_package_dev() {
+        let parsed = parse_from(vec_of_strings!["/ny", "add", "--dev", "pkg"]);
+
+        assert_eq!(
+            parsed.command,
+            Some(Commands::Add {
+                packages: vec_of_strings!["pkg"],
+                dev: true,
+                workspace_root: false
+            })
+        );
+    }
+
+    #[test]
+    fn add_package_dev_alias() {
+        let parsed = parse_from(vec_of_strings!["/ny", "add", "--save-dev", "pkg"]);
+
+        assert_eq!(
+            parsed.command,
+            Some(Commands::Add {
+                packages: vec_of_strings!["pkg"],
+                dev: true,
+                workspace_root: false
             })
         );
     }

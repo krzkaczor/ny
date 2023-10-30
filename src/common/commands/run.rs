@@ -36,13 +36,12 @@ pub fn run(
         )
     } else {
         let program = task;
-        println!("{}", format!("$ {}", program).dimmed());
 
         executor.execute(
             program,
             extra_args.unwrap_or_default(),
             Some(bin_path),
-            false, // do not print command as it's quite odd to see "sh -c <script>"
+            true,  // print out command being executed
             false, // do not silence output
         )
     }
@@ -151,7 +150,7 @@ mod tests {
             "mocha",
             vec_of_strings!("--help"),
             Some("/project/node_modules/.bin:/node_modules/.bin:".to_string()),
-            false,
+            true,
             false,
         );
         let mut mock_fs = MockFilesystem::new();

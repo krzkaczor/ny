@@ -68,9 +68,9 @@ Main sources of inspiration were [antfu/ni](https://github.com/antfu/ni) (but it
 
 If `ny` detects that it's running in TypeScript enabled package, it will attempt to install missing typings when adding new packages. Right now this behaviour can't be turned off.
 
-### Roadmap & contributing
+### Contributing
 
-Have a look at [open issues](https://github.com/krzkaczor/ny/issues?q=is:issue+is:open+sort:updated-desc). Feel free to work on any of them but first let us know via a comment to avoid doubling the work. Simply upvote issues to help us with prioritization.
+All contributions are welcomed! [Read contributing guide for more](./contributing.md).
 
 ### Logo
 
