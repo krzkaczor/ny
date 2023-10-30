@@ -150,7 +150,7 @@ mod tests {
             "mocha",
             vec_of_strings!("--help"),
             Some("/project/node_modules/.bin:/node_modules/.bin:".to_string()),
-            false,
+            true,
             false,
         );
         let mut mock_fs = MockFilesystem::new();
