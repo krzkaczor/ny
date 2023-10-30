@@ -7,6 +7,7 @@ pub struct Cli {
     pub command: Option<Commands>,
 }
 
+// @note: we do pre-parsing of CLI args in `parse_from` function down below
 #[derive(Subcommand, PartialEq, Debug)]
 pub enum Commands {
     /// Install dependencies
@@ -45,8 +46,9 @@ pub enum Commands {
     },
 }
 
-// our cli is too complex to parse for clap so first we do a little bit of preprocessing
+// our cli is too complex to parse by clap alone so first we do a little bit of preprocessing
 pub fn parse_from(mut args: Vec<String>) -> Cli {
+    println!("parsing cli args: {:?}", args);
     if args.len() > 1 {
         // if first arg is a task name
         if (args[1] != "install" && args[1] != "i")
@@ -67,7 +69,7 @@ pub fn parse_from(mut args: Vec<String>) -> Cli {
             }
         }
     }
-
+    println!("parsed args: {:?}", args);
     Cli::parse_from(args)
 }
 
