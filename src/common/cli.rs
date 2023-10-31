@@ -62,14 +62,16 @@ pub fn parse_from(mut args: Vec<String>) -> Cli {
         }
 
         if args[1] == "run" || args[1] == "r" {
-            // if last arg to task is --help
-            if args.last() == Some(&"--help".to_string()) {
-                // then we need to prepend it with -- so clap doesnt confuse it
+            // if there are only 4 args in total and --help at the end
+            // ex. "ny run program --help"
+            if args.len() == 4 && args.last() == Some(&"--help".to_string()) {
+                // prepend it with -- so clap doesnt confuse it with --help flag for ny itself
                 args.insert(args.len() - 1, "--".to_string());
             }
         }
     }
     println!("parsed args: {:?}", args);
+    println!("args count: {}", args.len());
     Cli::parse_from(args)
 }
 
