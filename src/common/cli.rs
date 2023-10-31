@@ -117,7 +117,7 @@ mod tests {
             parsed.command,
             Some(Commands::Run {
                 task: "mocha".to_string(),
-                extra_args: vec_of_strings!["--", "--help"]
+                extra_args: vec_of_strings!["--help"]
             })
         );
     }
@@ -143,7 +143,7 @@ mod tests {
             parsed.command,
             Some(Commands::Run {
                 task: "mocha".to_string(),
-                extra_args: vec_of_strings!["--", "--help"]
+                extra_args: vec_of_strings!["--help"]
             })
         );
     }
