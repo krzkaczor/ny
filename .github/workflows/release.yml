@@ -46,7 +46,7 @@ jobs:
 
       - name: Install openssl deps for Linux
         if: matrix.os == 'ubuntu-latest'
-        run: apt-get install pkg-config libssl-dev
+        run: sudo apt-get install pkg-config libssl-dev
 
       # Cache files between builds
       - name: Setup | Cache Cargo
