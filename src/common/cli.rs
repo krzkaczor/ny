@@ -7,6 +7,7 @@ pub struct Cli {
     pub command: Option<Commands>,
 }
 
+// @note: we do pre-parsing of CLI args in `parse_from` function down below
 #[derive(Subcommand, PartialEq, Debug)]
 pub enum Commands {
     /// Install dependencies
@@ -45,7 +46,7 @@ pub enum Commands {
     },
 }
 
-// our cli is too complex to parse for clap so first we do a little bit of preprocessing
+// our cli is too complex to parse by clap alone so first we do a little bit of preprocessing
 pub fn parse_from(mut args: Vec<String>) -> Cli {
     if args.len() > 1 {
         // if first arg is a task name
@@ -60,14 +61,14 @@ pub fn parse_from(mut args: Vec<String>) -> Cli {
         }
 
         if args[1] == "run" || args[1] == "r" {
-            // if last arg to task is --help
-            if args.last() == Some(&"--help".to_string()) {
-                // then we need to prepend it with -- so clap doesnt confuse it
+            // if there are only 4 args in total and --help at the end
+            // ex. "ny run program --help"
+            if args.len() == 4 && args.last() == Some(&"--help".to_string()) {
+                // prepend it with -- so clap doesnt confuse it with --help flag for ny itself
                 args.insert(args.len() - 1, "--".to_string());
             }
         }
     }
-
     Cli::parse_from(args)
 }
 
@@ -116,7 +117,7 @@ mod tests {
             parsed.command,
             Some(Commands::Run {
                 task: "mocha".to_string(),
-                extra_args: vec_of_strings!["--", "--help"]
+                extra_args: vec_of_strings!["--help"]
             })
         );
     }
@@ -142,7 +143,7 @@ mod tests {
             parsed.command,
             Some(Commands::Run {
                 task: "mocha".to_string(),
-                extra_args: vec_of_strings!["--", "--help"]
+                extra_args: vec_of_strings!["--help"]
             })
         );
     }

@@ -37,3 +37,23 @@ jobs:
         with:
           command: clippy
           args: -- -D warnings
+
+  test-e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+      - uses: oven-sh/setup-bun@v1
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+
+      - name: E2E Tests
+        run: bun test
+        working-directory: ./test-e2e
