@@ -56,4 +56,4 @@ jobs:
 
       - name: E2E Tests
         run: bun test
-        working-directory: ./tests-e2e
+        working-directory: ./test-e2e

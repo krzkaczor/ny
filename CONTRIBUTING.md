@@ -11,7 +11,7 @@ This is a pretty standard rust app, use `cargo` for everything.
 ```
 cargo test # we have pretty extensive test suite
 cargo build # dev build is needed to run E2E tests
-cd tests-e2e
+cd test-e2e
 bun test
 ```
 

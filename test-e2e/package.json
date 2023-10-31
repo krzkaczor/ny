@@ -1,5 +1,5 @@
 {
-  "name": "tests-e2e",
+  "name": "test-e2e",
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
