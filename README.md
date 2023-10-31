@@ -1,7 +1,8 @@
 <p align="center">
   <img src="assets/hero.png">
   <h1 align="center">🗽 NY</h1>
-  <h3 align="center">Universal Node Package Manager</h3>
+  <h3 align="center">Proxy Package Manager for JavaScript</h3>
+  <h3 align="center">Chooses the right package manager based on the lockfile.</h3>
   <p align="center"><i><strong>n</strong></i>ode • <i><strong>y</strong></i>arn • pnpm</p>
 </p>
 
