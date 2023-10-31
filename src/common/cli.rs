@@ -48,7 +48,6 @@ pub enum Commands {
 
 // our cli is too complex to parse by clap alone so first we do a little bit of preprocessing
 pub fn parse_from(mut args: Vec<String>) -> Cli {
-    println!("parsing cli args: {:?}", args);
     if args.len() > 1 {
         // if first arg is a task name
         if (args[1] != "install" && args[1] != "i")
@@ -70,8 +69,6 @@ pub fn parse_from(mut args: Vec<String>) -> Cli {
             }
         }
     }
-    println!("parsed args: {:?}", args);
-    println!("args count: {}", args.len());
     Cli::parse_from(args)
 }
 
