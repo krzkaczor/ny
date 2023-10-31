@@ -5,5 +5,8 @@
   "license": "MIT",
   "dependencies": {
     "echo-cli": "^2.0.0"
+  },
+  "scripts": {
+    "test": "echo-cli some-output"
   }
 }
