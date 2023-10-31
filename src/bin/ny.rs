@@ -13,6 +13,7 @@ use common::{
     },
     execute::RealExecutor,
     fs::RealFs,
+    http::RealHttpClient,
 };
 
 fn main() -> Result<()> {
@@ -21,7 +22,8 @@ fn main() -> Result<()> {
     let cwd = env::current_dir().unwrap();
     let executor = RealExecutor {};
     let fs = RealFs {};
-    // @todo this could be ommited for "run" command
+    let http_client = RealHttpClient {};
+    // @todo this could be omitted for "run" command
     let agent = Agent::recognize(&fs, &cwd)
         .ok_or_else(|| eyre!("Couldn't find any lockfile inside {cwd:?} or any of its parents."))?;
 
@@ -39,7 +41,15 @@ fn main() -> Result<()> {
         }) => {
             add(&executor, &agent, dev, workspace_root, &packages, false)?;
             if check_if_ts_repo(&fs, &cwd) {
-                install_ts_types(&executor, &fs, &agent, &cwd, &packages, workspace_root)
+                install_ts_types(
+                    &executor,
+                    &fs,
+                    &http_client,
+                    &agent,
+                    &cwd,
+                    &packages,
+                    workspace_root,
+                )
             } else {
                 Ok(())
             }

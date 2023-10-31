@@ -6,4 +6,5 @@ pub mod cli;
 pub mod commands;
 pub mod execute;
 pub mod fs;
+pub mod http;
 mod utils;
