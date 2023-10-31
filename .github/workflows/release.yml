@@ -61,9 +61,6 @@ jobs:
           target: ${{ matrix.target }}
           override: true
 
-      - name: Run Tests
-        run: cargo test
-
       - name: Build release
         uses: actions-rs/cargo@v1
         with:

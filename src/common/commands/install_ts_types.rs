@@ -5,6 +5,7 @@ use std::path::Path;
 use crate::agent::Agent;
 use crate::execute::Executor;
 use crate::fs::{find_in_parents, Filesystem};
+use crate::http::HttpClient;
 
 use super::add;
 
@@ -15,13 +16,12 @@ pub fn check_if_ts_repo(fs: &dyn Filesystem, cwd: &Path) -> bool {
 pub fn install_ts_types(
     executor: &dyn Executor,
     fs: &dyn Filesystem,
+    http_client: &dyn HttpClient,
     agent: &Agent,
     cwd: &Path,
     packages: &[String],
     workspace_root: bool,
 ) -> Result<()> {
-    // println!("\nInstalling typings if missing..."); @todo print this only in verbose/debug moge
-
     let packages_missing_types = packages
         .iter()
         .filter(|package| !package.starts_with("@types/"))
@@ -31,16 +31,27 @@ pub fn install_ts_types(
     let packages_to_install = packages_missing_types
         .iter()
         .map(|package| package_name_to_types_package_name(package.to_string()))
-        .filter(|package| !check_if_package_exists(fs, cwd, package).unwrap_or_default())
+        .filter(|package| !check_if_package_exists_locally(fs, cwd, package).unwrap_or_default())
+        .filter(|package| {
+            check_if_package_exists_in_registry(http_client, package).unwrap_or_default()
+        })
         .collect::<Vec<_>>();
 
     if !packages_to_install.is_empty() {
         println!();
-        println!(
-            "Installing types for {} packages: {}",
-            packages_to_install.len(),
-            packages_to_install.join(", ").dimmed()
-        );
+        if packages_to_install.len() == 1 {
+            println!(
+                "Installing missing types: {}",
+                packages_to_install.join(", ").dimmed()
+            );
+        } else {
+            println!(
+                "Installing missing types for {} packages: {}",
+                packages_to_install.len(),
+                packages_to_install.join(", ").dimmed()
+            );
+        }
+
         add::add(
             executor,
             agent,
@@ -80,12 +91,21 @@ fn check_if_package_has_types(fs: &dyn Filesystem, cwd: &Path, package: &str) ->
     Ok(types.is_some() || typings.is_some())
 }
 
-fn check_if_package_exists(fs: &dyn Filesystem, cwd: &Path, package: &str) -> Result<bool> {
+fn check_if_package_exists_locally(fs: &dyn Filesystem, cwd: &Path, package: &str) -> Result<bool> {
     let package_json_sub_path = Path::new("node_modules").join(package).join("package.json");
     find_in_parents(fs, cwd, package_json_sub_path.to_str().unwrap())
         .context("can't find package root")?;
 
     Ok(true)
+}
+
+// @todo: this should be parallelized
+fn check_if_package_exists_in_registry(
+    http_client: &dyn HttpClient,
+    package: &str,
+) -> Result<bool> {
+    let url = format!("https://registry.npmjs.org/{}", package);
+    http_client.request_if_success(&url)
 }
 
 #[cfg(test)]
@@ -95,6 +115,7 @@ mod tests {
     use crate::{
         execute::{expect_execute_once, MockExecutor},
         fs::{test_utils::expect_file, MockFilesystem},
+        http::{test_utils::expect_package_exist_in_registry, MockHttpClient},
         utils::vec_of_strings,
     };
 
@@ -227,14 +248,49 @@ mod tests {
             true,
             true,
         );
+
+        let mut mock_http_client = MockHttpClient::new();
+        expect_package_exist_in_registry(&mut mock_http_client, "@types/package-a", true);
+
         let agent = Agent::Npm;
 
         install_ts_types(
             &mock_executor,
             &mock_fs,
+            &mock_http_client,
             &agent,
             Path::new("/project"),
             &vec_of_strings!["package-a", "package-b", "package-c"],
+            false,
+        )
+        .unwrap();
+    }
+
+    #[test]
+    fn test_integration_package_with_types_missing_in_registry() {
+        let mut mock_fs = MockFilesystem::new();
+        //package-a without types
+        expect_file(
+            &mut mock_fs,
+            Path::new("/project/node_modules/package-a/package.json").to_owned(),
+            r#"{}"#.to_owned(),
+        );
+        mock_fs.expect_exists().returning(|_| false);
+
+        let mock_executor = MockExecutor::new();
+
+        let mut mock_http_client = MockHttpClient::new();
+        expect_package_exist_in_registry(&mut mock_http_client, "@types/package-a", false);
+
+        let agent = Agent::Npm;
+
+        install_ts_types(
+            &mock_executor,
+            &mock_fs,
+            &mock_http_client,
+            &agent,
+            Path::new("/project"),
+            &vec_of_strings!["package-a"],
             false,
         )
         .unwrap();
@@ -251,11 +307,13 @@ mod tests {
         );
 
         let mock_executor = MockExecutor::new();
+        let mock_http_client = MockHttpClient::new();
         let agent = Agent::Npm;
 
         install_ts_types(
             &mock_executor,
             &mock_fs,
+            &mock_http_client,
             &agent,
             Path::new("/project"),
             &vec_of_strings!["package-a"],
