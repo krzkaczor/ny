@@ -1,0 +1,23 @@
+name: Changesets
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: oven-sh/setup-bun@v1
+
+      - run: bun install
+
+      - name: Create Release Pull Request or Start release (tag)
+        uses: changesets/action@v1
+        with:
+          version: bun version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
