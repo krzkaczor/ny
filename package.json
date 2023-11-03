@@ -6,6 +6,7 @@
     "@changesets/cli": "^2.26.2"
   },
   "scripts": {
-    "version": "changeset version && bun .changeset/sync-cargo-version.ts"
+    "version": "changeset version && bun .changeset/sync-cargo-version.ts",
+    "publish": "bun changeset publish"
   }
 }
