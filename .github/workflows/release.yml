@@ -19,22 +19,21 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - target: x86_64-unknown-linux-musl
+          - target: x86_64-unknown-linux-musl # for cargo
+            target_human: linux_amd64 # for the release artifact
             os: ubuntu-latest
-            output: ny
-            archive: tar.gz
+
           - target: aarch64-unknown-linux-musl
+            target_human: linux_arm64
             os: ubuntu-latest
-            output: ny
-            archive: tar.gz
+
           - target: x86_64-apple-darwin
+            target_human: darwin_amd64
             os: macos-latest
-            output: ny
-            archive: zip
+
           - target: aarch64-apple-darwin
+            target_human: darwin_arm64
             os: macos-latest
-            output: ny
-            archive: zip
 
     steps:
       - uses: actions/checkout@v2
@@ -69,56 +68,25 @@ jobs:
           use-cross: ${{ matrix.os == 'ubuntu-latest' }}
 
       - name: Copy and rename utility
-        run: cp target/${{ matrix.target }}/release/${{ matrix.output }} ${{ matrix.output }}
+        run: cp target/${{ matrix.target }}/release/ny ny
 
-      - name: Create archive (linux)
-        if: ${{ matrix.os != 'macos-latest' && matrix.os != 'windows-latest' }}
+      - name: Create archive
         run: |
-          tar -czvf ny-${{ matrix.target }}.${{ matrix.archive }} ${{ matrix.output }}
-          sha256sum ny-${{ matrix.target }}.${{ matrix.archive }} > ny-${{ matrix.target }}-sha256sum.txt
-
-      # - name: Create archive (windows)
-      #   if: ${{ matrix.os == 'windows-latest' }}
-      #   run: |
-      #     tar.exe -a -c -f ny-${{ matrix.target }}.${{ matrix.archive }} ${{ matrix.output }}
-      #     sha256sum.exe ny-${{ matrix.target }}.${{ matrix.archive }} > ny-${{ matrix.target }}-sha256sum.txt
-
-      - name: Create archive (macos)
-        if: ${{ matrix.os == 'macos-latest' }}
-        run: |
-          zip ny-${{ matrix.target }}.${{ matrix.archive }} ${{ matrix.output }}
-          sha256sum ny-${{ matrix.target }}.${{ matrix.archive }} > ny-${{ matrix.target }}-sha256sum.txt
+          tar -czvf ny-${{ matrix.target }}.tar.gz ny
 
       - name: Upload artifacts archive
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         uses: actions/upload-artifact@v2
         with:
-          name: ny-${{ matrix.target }}.${{ matrix.archive }}
-          path: ny-${{ matrix.target }}.${{ matrix.archive }}
-
-      - name: Upload artifacts checksum
-        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: ny-${{ matrix.target }}-sha256sum.txt
-          path: ny-${{ matrix.target }}-sha256sum.txt
+          name: ny-${{ matrix.target_human }}.tar.gz
+          path: ny-${{ matrix.target }}.tar.gz
 
       - name: Upload binary to release
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ny-${{ matrix.target }}.${{ matrix.archive }}
-          asset_name: ny-${{ matrix.target }}.${{ matrix.archive }}
-          tag: ${{ github.ref }}
-          overwrite: true
-
-      - name: Upload checksum to release
-        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ny-${{ matrix.target }}-sha256sum.txt
-          asset_name: ny-${{ matrix.target }}-sha256sum.txt
+          file: ny-${{ matrix.target }}.tar.gz
+          asset_name: ny-${{ matrix.target_human }}.tar.gz
           tag: ${{ github.ref }}
           overwrite: true
