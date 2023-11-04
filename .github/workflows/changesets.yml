@@ -20,5 +20,6 @@ jobs:
         with:
           version: bun run version
           publish: bun run publish
+          createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GH_SECRET_CHANGESET }}

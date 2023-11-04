@@ -7,6 +7,6 @@
   },
   "scripts": {
     "version": "changeset version && bun .changeset/sync-cargo-version.ts",
-    "publish": "git tag v`cat package.json | jq -r .version`"
+    "publish": "changeset tag"
   }
 }

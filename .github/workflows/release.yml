@@ -20,19 +20,19 @@ jobs:
       matrix:
         include:
           - target: x86_64-unknown-linux-musl # for cargo
-            target_human: linux_amd64 # for the release artifact
+            release_name: linux_amd64
             os: ubuntu-latest
 
           - target: aarch64-unknown-linux-musl
-            target_human: linux_arm64
+            release_name: linux_arm64
             os: ubuntu-latest
 
           - target: x86_64-apple-darwin
-            target_human: darwin_amd64
+            release_name: darwin_amd64
             os: macos-latest
 
           - target: aarch64-apple-darwin
-            target_human: darwin_arm64
+            release_name: darwin_arm64
             os: macos-latest
 
     steps:
@@ -72,21 +72,21 @@ jobs:
 
       - name: Create archive
         run: |
-          tar -czvf ny-${{ matrix.target }}.tar.gz ny
+          tar -czvf ny_${{ matrix.target }}.tar.gz ny
 
       - name: Upload artifacts archive
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         uses: actions/upload-artifact@v2
         with:
-          name: ny-${{ matrix.target_human }}.tar.gz
-          path: ny-${{ matrix.target }}.tar.gz
+          name: ny_${{ matrix.release_name }}.tar.gz
+          path: ny_${{ matrix.target }}.tar.gz
 
       - name: Upload binary to release
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ny-${{ matrix.target }}.tar.gz
-          asset_name: ny-${{ matrix.target_human }}.tar.gz
+          file: ny_${{ matrix.target }}.tar.gz
+          asset_name: ny_${{ matrix.release_name }}.tar.gz
           tag: ${{ github.ref }}
           overwrite: true
