@@ -37,21 +37,13 @@ ny vitest # executes node_modules/.bin binary eq. to: yarn vitest
 
 ## Installation
 
-## Tea
-
-[Tea](http://tea.xyz/) is a Homebrew successor and recommended way of installing NY.
+### Install script
 
 ```sh
-tea ny
+curl -fsSL https://raw.githubusercontent.com/krzkaczor/ny/main/install.sh | bash
 ```
 
-## Brew
-
-```sh
-brew install krzkaczor/tap/ny
-```
-
-### Download binary for Linux / Mac Os X
+### Manually download binary for Linux / Mac Os X
 
 Get the newest release from [releases page](https://github.com/krzkaczor/ny/releases).
 
