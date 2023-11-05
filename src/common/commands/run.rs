@@ -2,15 +2,28 @@ use colored::Colorize;
 use eyre::{ContextCompat, Result};
 use std::path::Path;
 
-use crate::{execute::Executor, fs::find_in_parents, fs::Filesystem};
+use crate::{agent::Agent, execute::Executor, fs::find_in_parents, fs::Filesystem};
 
 pub fn run(
     executor: &dyn Executor,
     fs: &dyn Filesystem,
+    agent: &Agent,
     task: &str,
     cwd: &Path,
     extra_args: Option<&[&str]>,
 ) -> Result<()> {
+    // for alternative runtimes, just proxy the call
+    if agent == &Agent::Bun {
+        let mut bun_args = vec!["run", &task];
+
+        // append extra args if any
+        if let Some(extra_args) = extra_args {
+            bun_args.extend_from_slice(&extra_args);
+        }
+
+        return executor.execute("bun", &bun_args, None, true, false);
+    }
+
     let package_json_path = find_in_parents(fs, cwd, "package.json").with_context(|| {
         format!("Couldn't find package.json in the current directory: {cwd:?} or its parents.")
     })?;
@@ -134,6 +147,7 @@ mod tests {
         let result = run(
             &mock_executor,
             &mock_fs,
+            &Agent::Npm,
             "test",
             Path::new("/project"),
             Some(&["--no-timeout", "--bail"]),
@@ -163,9 +177,35 @@ mod tests {
         let result = run(
             &mock_executor,
             &mock_fs,
+            &Agent::Npm,
             "mocha",
             Path::new("/project"),
             Some(&["--help"]),
+        );
+
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn command_run_by_bun() {
+        let mut mock_executor = MockExecutor::new();
+        expect_execute_once(
+            &mut mock_executor,
+            "bun",
+            vec_of_strings!("run", "test", "--no-timeout"),
+            None,
+            true,
+            false,
+        );
+        let mock_fs = MockFilesystem::new();
+
+        let result = run(
+            &mock_executor,
+            &mock_fs,
+            &Agent::Bun,
+            "test",
+            Path::new("/project"),
+            Some(&["--no-timeout"]),
         );
 
         assert!(result.is_ok());

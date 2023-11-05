@@ -7,6 +7,7 @@ pub enum Agent {
     Npm,
     Yarn,
     Pnpm,
+    Bun,
 }
 
 impl Agent {
@@ -37,6 +38,7 @@ lazy_static! {
             ("npm-shrinkwrap.json", Agent::Npm),
             ("yarn.lock", Agent::Yarn),
             ("pnpm-lock.yaml", Agent::Pnpm),
+            ("bun.lockb", Agent::Bun),
         ])
     };
 }
