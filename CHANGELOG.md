@@ -1,5 +1,11 @@
 # ny
 
+## 0.2.0
+
+### Minor Changes
+
+- 6fdb140: Add support for Bun, Bun, Bun, Bun.
+
 ## 0.1.2
 
 ### Patch Changes
