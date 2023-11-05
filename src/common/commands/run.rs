@@ -14,11 +14,11 @@ pub fn run(
 ) -> Result<()> {
     // for alternative runtimes, just proxy the call
     if agent == &Agent::Bun {
-        let mut bun_args = vec!["run", &task];
+        let mut bun_args = vec!["run", task];
 
         // append extra args if any
         if let Some(extra_args) = extra_args {
-            bun_args.extend_from_slice(&extra_args);
+            bun_args.extend_from_slice(extra_args);
         }
 
         return executor.execute("bun", &bun_args, None, true, false);
