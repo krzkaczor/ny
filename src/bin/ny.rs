@@ -23,7 +23,6 @@ fn main() -> Result<()> {
     let executor = RealExecutor {};
     let fs = RealFs {};
     let http_client = RealHttpClient {};
-    // @todo this could be omitted for "run" command
     let agent = Agent::recognize(&fs, &cwd)
         .ok_or_else(|| eyre!("Couldn't find any lockfile inside {cwd:?} or any of its parents."))?;
 
@@ -32,7 +31,7 @@ fn main() -> Result<()> {
         Some(Commands::Run { task, extra_args }) => {
             let task = task.as_str();
             let extra_args: Vec<&str> = extra_args.iter().map(String::as_str).collect();
-            run(&executor, &fs, task, &cwd, Some(&extra_args))
+            run(&executor, &fs, &agent, task, &cwd, Some(&extra_args))
         }
         Some(Commands::Add {
             packages,

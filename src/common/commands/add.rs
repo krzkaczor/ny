@@ -1,5 +1,5 @@
 use crate::{agent::Agent, execute::Executor};
-use eyre::Result;
+use eyre::{eyre, Result};
 
 pub fn add(
     executor: &dyn Executor,
@@ -67,6 +67,24 @@ pub fn add(
             true,
             silence_stdout,
         ),
+        Agent::Bun => {
+            if workspace_root {
+                return Err(eyre!("Bun doesn't support workspace_root flag"));
+            }
+
+            executor.execute(
+                "bun",
+                &merge_and_clean_args(
+                    "add",
+                    if dev { Some("-D") } else { None },
+                    None,
+                    packages_refs,
+                ),
+                None,
+                true,
+                silence_stdout,
+            )
+        }
     }
 }
 
@@ -214,6 +232,30 @@ mod tests {
             &Agent::Pnpm,
             true,
             true,
+            &vec_of_strings!["packageA", "packageB"],
+            false,
+        );
+
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_add_bun() {
+        let mut mock_executor = MockExecutor::new();
+        expect_execute_once(
+            &mut mock_executor,
+            "bun",
+            vec_of_strings!("add", "-D", "packageA", "packageB"),
+            None,
+            true,
+            false,
+        );
+
+        let result = add(
+            &mock_executor,
+            &Agent::Bun,
+            true,
+            false,
             &vec_of_strings!["packageA", "packageB"],
             false,
         );
