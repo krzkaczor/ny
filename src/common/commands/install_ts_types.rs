@@ -74,7 +74,7 @@ fn package_name_to_types_package_name(mut package: String) -> String {
     // cut off version
     package = package.split('@').collect::<Vec<_>>()[0].to_string();
 
-    format!("@types/{}", package)
+    format!("@types/{package}")
 }
 
 fn check_if_package_has_types(fs: &dyn Filesystem, cwd: &Path, package: &str) -> Result<bool> {
@@ -104,7 +104,7 @@ fn check_if_package_exists_in_registry(
     http_client: &dyn HttpClient,
     package: &str,
 ) -> Result<bool> {
-    let url = format!("https://registry.npmjs.org/{}", package);
+    let url = format!("https://registry.npmjs.org/{package}");
     http_client.request_if_success(&url)
 }
 

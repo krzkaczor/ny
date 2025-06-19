@@ -43,10 +43,10 @@ impl Executor for RealExecutor {
 
         let mut proc = cmd_builder_ref
             .spawn()
-            .with_context(|| format!("Couldn't run command: {}", program))?;
+            .with_context(|| format!("Couldn't run command: {program}"))?;
         let exit_status = proc
             .wait()
-            .with_context(|| format!("Couldn't run command: {}", program))?;
+            .with_context(|| format!("Couldn't run command: {program}"))?;
         if !exit_status.success() {
             std::process::exit(exit_status.code().unwrap_or(1));
         }
