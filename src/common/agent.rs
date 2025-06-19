@@ -39,6 +39,7 @@ lazy_static! {
             ("yarn.lock", Agent::Yarn),
             ("pnpm-lock.yaml", Agent::Pnpm),
             ("bun.lockb", Agent::Bun),
+            ("bun.lock", Agent::Bun),
         ])
     };
 }
@@ -71,6 +72,18 @@ mod tests {
             .returning(|path| path == Path::new("/yarn.lock"));
 
         assert_eq!(Agent::recognize(&mock_fs, dir), Some(Agent::Yarn));
+    }
+
+    #[test]
+    fn test_recognize_bun_new_lockfile_in_parent() {
+        let dir = Path::new("/npm-project");
+        let mut mock_fs = MockFilesystem::new();
+        mock_fs
+            // keep in mind that this can be called in any order
+            .expect_exists()
+            .returning(|path| path == Path::new("/bun.lock"));
+
+        assert_eq!(Agent::recognize(&mock_fs, dir), Some(Agent::Bun));
     }
 
     #[test]
