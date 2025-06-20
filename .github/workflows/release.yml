@@ -52,10 +52,11 @@ jobs:
             ~/.cargo/git
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rs/toolchain@v1
         with:
+          profile: minimal
           toolchain: nightly
-          target: ${{ matrix.target }}
+          override: true
 
       - name: Build release
         uses: actions-rs/cargo@v1
