@@ -58,6 +58,8 @@ jobs:
           toolchain: nightly
           override: true
 
+      - run: rustup target add ${{matrix.target}}
+
       - name: Build release
         uses: actions-rs/cargo@v1
         with:
