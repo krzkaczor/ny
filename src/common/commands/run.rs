@@ -38,7 +38,7 @@ pub fn run(
             script += &extra_args.join(" ")
         }
 
-        println!("{}", format!("$ {}", script).dimmed());
+        println!("{}", format!("$ {script}").dimmed());
 
         executor.execute(
             "sh",
