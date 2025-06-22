@@ -1,5 +1,11 @@
 # ny
 
+## 0.2.1
+
+### Patch Changes
+
+- f97dc72: Support new bun.js lockfile format
+
 ## 0.2.0
 
 ### Minor Changes
