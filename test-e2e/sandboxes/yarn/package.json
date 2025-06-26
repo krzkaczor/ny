@@ -4,7 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "echo-cli": "^2.0.0"
+    "echo-cli": "^2.0.0",
+    "esbuild": "^0.25.5",
+    "esbuild-register": "^3.6.0"
   },
   "scripts": {
     "test": "echo-cli some-output"

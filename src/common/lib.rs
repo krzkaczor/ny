@@ -8,3 +8,4 @@ pub mod execute;
 pub mod fs;
 pub mod http;
 mod utils;
+mod test_e2e;
