@@ -1,12 +1,13 @@
 use crate::agent::Agent;
 
-pub fn try_optimize_script_execution<'a>(agent: &'a Agent, script: &'a str) -> Option<Vec<&'a str>> {
+pub fn try_optimize_script_execution<'a>(
+    agent: &'a Agent,
+    script: &'a str,
+) -> Option<Vec<&'a str>> {
     let run_prefix = agent_to_run_command(agent);
     let chunks: Vec<_> = script.split("&&").map(str::trim).collect();
 
-    let optimizable = chunks.iter().all(|chunk| {
-        chunk.starts_with(run_prefix)
-    });
+    let optimizable = chunks.iter().all(|chunk| chunk.starts_with(run_prefix));
 
     if !optimizable {
         return None;

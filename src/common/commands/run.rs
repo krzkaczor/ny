@@ -2,8 +2,8 @@ use colored::Colorize;
 use eyre::{ContextCompat, Result};
 use std::path::Path;
 
-use crate::{agent::Agent, execute::Executor, fs::find_in_parents, fs::Filesystem};
 use crate::commands::run_optimized::try_optimize_script_execution;
+use crate::{agent::Agent, execute::Executor, fs::find_in_parents, fs::Filesystem};
 
 pub fn run(
     executor: &dyn Executor,
@@ -36,7 +36,14 @@ pub fn run(
     run_script_or_program(executor, &agent, task, extra_args, &package_json, bin_path)
 }
 
-fn run_script_or_program(executor: &dyn Executor, agent: &Agent, task: &str, extra_args: Option<&[&str]>, package_json: &serde_json::Value, bin_path: String) -> Result<()> {
+fn run_script_or_program(
+    executor: &dyn Executor,
+    agent: &Agent,
+    task: &str,
+    extra_args: Option<&[&str]>,
+    package_json: &serde_json::Value,
+    bin_path: String,
+) -> Result<()> {
     if let Some(mut script) = load_script(&package_json, task) {
         if let Some(extra_args) = extra_args {
             script += " ";
@@ -48,7 +55,14 @@ fn run_script_or_program(executor: &dyn Executor, agent: &Agent, task: &str, ext
 
         if let Some(subscripts) = subscripts {
             for subscript in subscripts {
-                run_script_or_program(executor, agent, &subscript, None, &package_json, bin_path.clone())?
+                run_script_or_program(
+                    executor,
+                    agent,
+                    &subscript,
+                    None,
+                    &package_json,
+                    bin_path.clone(),
+                )?
             }
             return Ok(());
         }

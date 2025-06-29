@@ -29,7 +29,7 @@ impl Executor for RealExecutor {
         if verbose {
             println!("{}", format!("$ {} {}", program, args.join(" ")).dimmed());
         }
-        
+
         let mut cmd_builder_ref = std::process::Command::new(program);
         let cmd_builder = cmd_builder_ref.args(args);
 
