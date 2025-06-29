@@ -19,7 +19,7 @@ use common::{
 fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     let cli = parse_from(args);
-    let cwd = env::current_dir().unwrap();
+    let cwd = env::current_dir()?;
     let executor = RealExecutor {};
     let fs = RealFs {};
     let http_client = RealHttpClient {};
