@@ -3,6 +3,7 @@ use eyre::{ContextCompat, Result};
 use std::path::Path;
 
 use crate::{agent::Agent, execute::Executor, fs::find_in_parents, fs::Filesystem};
+use crate::commands::run_optimized::try_optimize_script_execution;
 
 pub fn run(
     executor: &dyn Executor,
@@ -32,10 +33,24 @@ pub fn run(
 
     let bin_path = construct_path_env(package_json_path.parent().unwrap());
 
+    run_script_or_program(executor, &agent, task, extra_args, &package_json, bin_path)
+}
+
+fn run_script_or_program(executor: &dyn Executor, agent: &Agent, task: &str, extra_args: Option<&[&str]>, package_json: &serde_json::Value, bin_path: String) -> Result<()> {
     if let Some(mut script) = load_script(&package_json, task) {
         if let Some(extra_args) = extra_args {
             script += " ";
             script += &extra_args.join(" ")
+        }
+
+        // try to optimize execution if script is only combining multiple other commands like "pnpm run lint && pnpm run test"
+        let subscripts = try_optimize_script_execution(agent, &script);
+
+        if let Some(subscripts) = subscripts {
+            for subscript in subscripts {
+                run_script_or_program(executor, agent, &subscript, None, &package_json, bin_path.clone())?
+            }
+            return Ok(());
         }
 
         println!("{}", format!("$ {script}").dimmed());
