@@ -1,5 +1,11 @@
 # ny
 
+## 0.2.2
+
+### Patch Changes
+
+- d6fabb4: Optimize nested run calls
+
 ## 0.2.1
 
 ### Patch Changes
