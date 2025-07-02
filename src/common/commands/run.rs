@@ -33,7 +33,7 @@ pub fn run(
 
     let bin_path = construct_path_env(package_json_path.parent().unwrap());
 
-    run_script_or_program(executor, &agent, task, extra_args, &package_json, bin_path)
+    run_script_or_program(executor, agent, task, extra_args, &package_json, bin_path)
 }
 
 fn run_script_or_program(
@@ -44,7 +44,7 @@ fn run_script_or_program(
     package_json: &serde_json::Value,
     bin_path: String,
 ) -> Result<()> {
-    if let Some(mut script) = load_script(&package_json, task) {
+    if let Some(mut script) = load_script(package_json, task) {
         if let Some(extra_args) = extra_args {
             script += " ";
             script += &extra_args.join(" ")
@@ -58,9 +58,9 @@ fn run_script_or_program(
                 run_script_or_program(
                     executor,
                     agent,
-                    &subscript,
+                    subscript,
                     None,
-                    &package_json,
+                    package_json,
                     bin_path.clone(),
                 )?
             }

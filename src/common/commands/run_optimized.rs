@@ -7,16 +7,16 @@ pub fn try_optimize_script_execution<'a>(
     // let run_prefix = agent_to_run_command(agent);
     let chunks: Vec<_> = script.split("&&").map(str::trim).collect();
 
-    let optimized: Vec<_> = chunks.iter().map(|chunk| optimize_script(agent, chunk)).collect();
+    let optimized: Vec<_> = chunks
+        .iter()
+        .map(|chunk| optimize_script(agent, chunk))
+        .collect();
 
     if optimized.contains(&None) {
         return None;
     }
 
-    let unwrapped: Vec<&str> = optimized
-        .into_iter()
-        .map(|opt| opt.unwrap())
-        .collect();
+    let unwrapped: Vec<&str> = optimized.into_iter().map(|opt| opt.unwrap()).collect();
     Some(unwrapped)
 }
 
@@ -31,7 +31,7 @@ fn optimize_script<'a>(agent: &Agent, script: &'a str) -> Option<&'a str> {
                 return Some(script);
             }
             Some(script[prefix.len()..].trim())
-        },
+        }
         Agent::Npm => {
             let prefix = "npm run ";
             if !script.starts_with(prefix) {
@@ -41,11 +41,11 @@ fn optimize_script<'a>(agent: &Agent, script: &'a str) -> Option<&'a str> {
                 return Some(script);
             }
             Some(script[prefix.len()..].trim())
-        },
+        }
         Agent::Yarn => {
             let prefix = "yarn run ";
             Some(script[prefix.len()..].trim())
-        },
+        }
         Agent::Bun => None,
     }
 }
@@ -61,19 +61,33 @@ mod tests {
         assert_eq!(result.unwrap(), vec!["a", "b"]);
     }
 
-
     #[test]
     fn test_pnpm_does_not_optimize_calls_with_filtering() {
-        let result = try_optimize_script_execution(&Agent::Pnpm, "pnpm run biome check . && pnpm run --parallel --filter './packages/**' verify");
+        let result = try_optimize_script_execution(
+            &Agent::Pnpm,
+            "pnpm run biome check . && pnpm run --parallel --filter './packages/**' verify",
+        );
         assert!(result.is_some());
-        assert_eq!(result.unwrap(), vec!["biome check .", "pnpm run --parallel --filter './packages/**' verify"]);
+        assert_eq!(
+            result.unwrap(),
+            vec![
+                "biome check .",
+                "pnpm run --parallel --filter './packages/**' verify"
+            ]
+        );
     }
 
     #[test]
     fn test_npm_does_not_optimize_calls_with_filtering() {
-        let result = try_optimize_script_execution(&Agent::Npm, "npm run biome check . && npm run --workspaces verify");
+        let result = try_optimize_script_execution(
+            &Agent::Npm,
+            "npm run biome check . && npm run --workspaces verify",
+        );
         assert!(result.is_some());
-        assert_eq!(result.unwrap(), vec!["biome check .", "npm run --workspaces verify"]);
+        assert_eq!(
+            result.unwrap(),
+            vec!["biome check .", "npm run --workspaces verify"]
+        );
     }
 
     #[test]
