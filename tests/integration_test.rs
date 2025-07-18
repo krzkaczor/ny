@@ -24,28 +24,70 @@ fn test_create_repo() -> Result<(), io::Error> {
 }
 
 #[test]
-fn test_execute_script() -> Result<(), io::Error> {
-    let tmp_dir = TempDir::new("npm")?;
-    let cwd = tmp_dir.into_path();
-    println!("Working dir: {}", &cwd.display());
+fn test_execute_shell_script() -> Result<(), io::Error> {
+    for agent in Agent::all() {
+        let tmp_dir = TempDir::new("npm")?;
+        let cwd = tmp_dir.into_path();
+        println!("Working dir: {}", &cwd.display());
 
-    bash(&cwd, agent_to_init_command(&Agent::Npm).as_str());
-    bash(&cwd, "ny add echo-cli"); // required dep by some scripts
+        bash(&cwd, agent_to_init_command(&agent).as_str());
 
-    bash(&cwd, agent_to_init_command(&Agent::Npm).as_str());
-    insert_npm_scripts(&cwd, &[
-        ("shell", "echo 'a-was-run' && echo 'another-too'"),
-        ("npm-simple", "echo-cli 'Hello from npm-simple'"),
-        ("npm-simple2", "echo-cli 'lorem ipsum'"),
-        ("npm-recursive", "npm run npm-simple && npm run npm-simple2"),
-    ]);
+        insert_npm_scripts(&cwd, &[
+            ("shell", "echo 'a-was-run' && echo 'another-too'"),
+            ("shell2", "cd /tmp && pwd"),
+        ]);
 
-    let shell_output = bash(&cwd, "ny run shell");
-    assert!(shell_output.contains("a-was-run"));
-    assert!(shell_output.contains("another-too"));
+        let shell_output = bash(&cwd, "ny run shell");
+        assert!(shell_output.contains("a-was-run"));
+        assert!(shell_output.contains("another-too"));
+    }
 
-    let npm_simple_output = bash(&cwd, "ny run npm-simple");
-    assert!(npm_simple_output.contains("Hello from npm-simple"));
+    Ok(())
+}
+
+#[test]
+fn test_execute_shell_script2() -> Result<(), io::Error> {
+    for agent in Agent::all() {
+        let tmp_dir = TempDir::new("npm")?;
+        let cwd = tmp_dir.into_path();
+        println!("Working dir: {}", &cwd.display());
+
+        bash(&cwd, agent_to_init_command(agent).as_str());
+
+        insert_npm_scripts(&cwd, &[
+            ("shell", "cd /tmp && pwd"),
+        ]);
+
+        let shell_output = bash(&cwd, "ny run shell");
+        assert!(shell_output.contains("/tmp"));
+    }
+
+    Ok(())
+}
+
+#[test]
+fn test_execute_npm_script() -> Result<(), io::Error> {
+    for agent in Agent::all() {
+        let tmp_dir = TempDir::new("npm")?;
+        let cwd = tmp_dir.into_path();
+        println!("Working dir: {}", &cwd.display());
+
+        bash(&cwd, agent_to_init_command(agent).as_str());
+        bash(&cwd, "ny add echo-cli"); // required dep by some scripts
+
+        insert_npm_scripts(&cwd, &[
+            ("npm-simple", "echo-cli 'Hello from npm-simple'"),
+            ("npm-simple2", "echo-cli 'lorem ipsum'"),
+            ("npm-recursive", "npm run npm-simple && npm run npm-simple2"),
+        ]);
+
+        let npm_simple_output = bash(&cwd, "ny run npm-simple");
+        assert!(npm_simple_output.contains("Hello from npm-simple"));
+
+        let npm_recursive_output = bash(&cwd, "ny run npm-recursive");
+        assert!(npm_recursive_output.contains("Hello from npm-simple"));
+        assert!(npm_recursive_output.contains("lorem ipsum"));
+    }
 
     Ok(())
 }
@@ -53,6 +95,7 @@ fn test_execute_script() -> Result<(), io::Error> {
 
 fn agent_to_init_command(agent: &Agent) -> String {
     let package = "is-number";
+    // initializes repo and adds a dummy package so lockfile gets created
     match agent {
         Agent::Npm => format!("npm init -y && npm install {package}"),
         Agent::Yarn => format!("yarn init -y && yarn add {package}"),
