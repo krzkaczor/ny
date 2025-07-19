@@ -5,7 +5,7 @@ use tempdir::TempDir;
 mod shared;
 
 #[test]
-fn test_ny_help_works() {
+fn test_help_works() {
     let tmp_dir = TempDir::new("help_test").unwrap();
     let cwd = tmp_dir.into_path();
 
@@ -14,7 +14,7 @@ fn test_ny_help_works() {
 }
 
 #[test]
-fn test_ny_add_help_works() {
+fn test_help_add_help_works() {
     let tmp_dir = TempDir::new("help_test").unwrap();
     let cwd = tmp_dir.into_path();
 
@@ -23,7 +23,7 @@ fn test_ny_add_help_works() {
 }
 
 #[test]
-fn test_ny_run_echo_cli_help_prints_echo_help() {
+fn test_help_run_echo_cli_help_prints_echo_help() {
     for agent in Agent::all() {
         println!(
             "Testing {}",
@@ -41,7 +41,7 @@ fn test_ny_run_echo_cli_help_prints_echo_help() {
 }
 
 #[test]
-fn test_ny_run_echo_cli_some_help_passes_all_args() {
+fn test_help_run_echo_cli_some_help_passes_all_args() {
     for agent in Agent::all() {
         println!(
             "Testing {}",
@@ -59,7 +59,7 @@ fn test_ny_run_echo_cli_some_help_passes_all_args() {
 }
 
 #[test]
-fn test_ny_echo_cli_help_prints_echo_help() {
+fn test_help_echo_cli_help_prints_echo_help() {
     for agent in Agent::all() {
         println!(
             "Testing {}",
@@ -77,7 +77,7 @@ fn test_ny_echo_cli_help_prints_echo_help() {
 }
 
 #[test]
-fn test_ny_echo_cli_some_help_passes_all_args() {
+fn test_help_echo_cli_some_help_passes_all_args() {
     for agent in Agent::all() {
         println!(
             "Testing {}",

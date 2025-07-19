@@ -20,7 +20,11 @@ fn test_add_pure_js_dependency() -> Result<(), io::Error> {
         let stdout = shared::bash(&cwd, "ny add repeat-string");
 
         shared::assert_package_json_dependency(&cwd, "repeat-string", false);
-        assert!(!stdout.contains("Installing missing types")) // do not install types because it's not a ts project
+        // assert that types are not installed because tsconfig is missing
+        // bun initializes typescript enabled project always so actually ny installed missing @types as well
+        if agent.ne(&Agent::Bun) {
+            assert!(!stdout.contains("Installing missing types"))
+        }
     }
 
     Ok(())

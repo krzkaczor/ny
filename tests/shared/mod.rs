@@ -60,7 +60,11 @@ pub fn assert_package_json_dependency(cwd: &PathBuf, expected_dep: &str, dev: bo
     let manifest: serde_json::Value = serde_json::from_str(&manifest_raw).unwrap();
 
     let dep = manifest
-        .get(if !dev {"dependencies"} else {"devDependencies"})
+        .get(if !dev {
+            "dependencies"
+        } else {
+            "devDependencies"
+        })
         .and_then(|deps| deps.get(expected_dep));
 
     assert!(dep.is_some(), "missing dependency '{}'", expected_dep);
