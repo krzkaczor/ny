@@ -54,13 +54,13 @@ pub fn get_debug_dir() -> PathBuf {
 }
 
 #[allow(dead_code)]
-pub fn assert_package_json_dependency(cwd: &PathBuf, expected_dep: &str) {
+pub fn assert_package_json_dependency(cwd: &PathBuf, expected_dep: &str, dev: bool) {
     let path = cwd.join("package.json");
     let manifest_raw = std::fs::read_to_string(path).unwrap();
     let manifest: serde_json::Value = serde_json::from_str(&manifest_raw).unwrap();
 
     let dep = manifest
-        .get("dependencies")
+        .get(if !dev {"dependencies"} else {"devDependencies"})
         .and_then(|deps| deps.get(expected_dep));
 
     assert!(dep.is_some(), "missing dependency '{}'", expected_dep);
