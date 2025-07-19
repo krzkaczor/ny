@@ -11,19 +11,6 @@ pub enum Agent {
 }
 
 impl Agent {
-    pub fn all() -> &'static [Agent] {
-        &[Agent::Npm, Agent::Yarn, Agent::Pnpm, Agent::Bun]
-    }
-
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Agent::Npm => "npm",
-            Agent::Yarn => "yarn",
-            Agent::Pnpm => "pnpm",
-            Agent::Bun => "bun",
-        }
-    }
-
     pub fn recognize(fs: &dyn Filesystem, dir: &Path) -> Option<Self> {
         if let Some(agent) = Self::recognize_in_dir(fs, dir) {
             return Some(agent);

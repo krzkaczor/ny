@@ -1,4 +1,3 @@
-use common::agent::Agent;
 use owo_colors::OwoColorize;
 use tempdir::TempDir;
 
@@ -24,12 +23,12 @@ fn test_help_add_help_works() {
 
 #[test]
 fn test_help_run_echo_cli_help_prints_echo_help() {
-    for agent in Agent::all() {
+    for agent in shared::all_agents() {
         println!(
             "Testing {}",
-            agent.as_str().bg::<owo_colors::colors::BrightRed>()
+            shared::agent_as_str(agent).bg::<owo_colors::colors::BrightRed>()
         );
-        let tmp_dir = TempDir::new(agent.as_str()).unwrap();
+        let tmp_dir = TempDir::new(shared::agent_as_str(agent)).unwrap();
         let cwd = tmp_dir.into_path();
         println!("Working dir: {}", &cwd.display());
         shared::bash(&cwd, shared::agent_to_init_command(agent).as_str());
@@ -42,12 +41,12 @@ fn test_help_run_echo_cli_help_prints_echo_help() {
 
 #[test]
 fn test_help_run_echo_cli_some_help_passes_all_args() {
-    for agent in Agent::all() {
+    for agent in shared::all_agents() {
         println!(
             "Testing {}",
-            agent.as_str().bg::<owo_colors::colors::BrightRed>()
+            shared::agent_as_str(agent).bg::<owo_colors::colors::BrightRed>()
         );
-        let tmp_dir = TempDir::new(agent.as_str()).unwrap();
+        let tmp_dir = TempDir::new(shared::agent_as_str(agent)).unwrap();
         let cwd = tmp_dir.into_path();
         println!("Working dir: {}", &cwd.display());
         shared::bash(&cwd, shared::agent_to_init_command(agent).as_str());
@@ -60,12 +59,12 @@ fn test_help_run_echo_cli_some_help_passes_all_args() {
 
 #[test]
 fn test_help_echo_cli_help_prints_echo_help() {
-    for agent in Agent::all() {
+    for agent in shared::all_agents() {
         println!(
             "Testing {}",
-            agent.as_str().bg::<owo_colors::colors::BrightRed>()
+            shared::agent_as_str(agent).bg::<owo_colors::colors::BrightRed>()
         );
-        let tmp_dir = TempDir::new(agent.as_str()).unwrap();
+        let tmp_dir = TempDir::new(shared::agent_as_str(agent)).unwrap();
         let cwd = tmp_dir.into_path();
         println!("Working dir: {}", &cwd.display());
         shared::bash(&cwd, shared::agent_to_init_command(agent).as_str());
@@ -78,12 +77,12 @@ fn test_help_echo_cli_help_prints_echo_help() {
 
 #[test]
 fn test_help_echo_cli_some_help_passes_all_args() {
-    for agent in Agent::all() {
+    for agent in shared::all_agents() {
         println!(
             "Testing {}",
-            agent.as_str().bg::<owo_colors::colors::BrightRed>()
+            shared::agent_as_str(agent).bg::<owo_colors::colors::BrightRed>()
         );
-        let tmp_dir = TempDir::new(agent.as_str()).unwrap();
+        let tmp_dir = TempDir::new(shared::agent_as_str(agent)).unwrap();
         let cwd = tmp_dir.into_path();
         println!("Working dir: {}", &cwd.display());
         shared::bash(&cwd, shared::agent_to_init_command(agent).as_str());

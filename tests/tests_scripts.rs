@@ -1,4 +1,3 @@
-use common::agent::Agent;
 use std::io;
 use tempdir::TempDir;
 
@@ -6,7 +5,7 @@ mod shared;
 
 #[test]
 fn test_scripts_shell_script() -> Result<(), io::Error> {
-    for agent in Agent::all() {
+    for agent in shared::all_agents() {
         let tmp_dir = TempDir::new("npm")?;
         let cwd = tmp_dir.into_path();
         println!("Working dir: {}", &cwd.display());
@@ -31,7 +30,7 @@ fn test_scripts_shell_script() -> Result<(), io::Error> {
 
 #[test]
 fn test_scripts_shell_script2() -> Result<(), io::Error> {
-    for agent in Agent::all() {
+    for agent in shared::all_agents() {
         let tmp_dir = TempDir::new("npm")?;
         let cwd = tmp_dir.into_path();
         println!("Working dir: {}", &cwd.display());
@@ -49,7 +48,7 @@ fn test_scripts_shell_script2() -> Result<(), io::Error> {
 
 #[test]
 fn test_scripts_npm_script() -> Result<(), io::Error> {
-    for agent in Agent::all() {
+    for agent in shared::all_agents() {
         let tmp_dir = TempDir::new("npm")?;
         let cwd = tmp_dir.into_path();
         println!("Working dir: {}", &cwd.display());
@@ -79,7 +78,7 @@ fn test_scripts_npm_script() -> Result<(), io::Error> {
 
 #[test]
 fn test_scripts_passing_extra_args() -> Result<(), io::Error> {
-    for agent in Agent::all() {
+    for agent in shared::all_agents() {
         let tmp_dir = TempDir::new("npm")?;
         let cwd = tmp_dir.into_path();
         println!("Working dir: {}", &cwd.display());

@@ -97,3 +97,23 @@ pub fn insert_npm_scripts(cwd: &PathBuf, scripts: &[(&str, &str)]) {
     let new_manifest = serde_json::to_string_pretty(&manifest).unwrap();
     std::fs::write(path, new_manifest).unwrap();
 }
+
+#[allow(dead_code)]
+pub fn all_agents() -> &'static [Agent] {
+    &[
+        Agent::Npm,
+        Agent::Pnpm,
+        Agent::Bun,
+        // Agent::Yarn, skip yarn because it has some weird problems with checksums during install
+    ]
+}
+
+#[allow(dead_code)]
+pub fn agent_as_str(agent: &Agent) -> &'static str {
+    match agent {
+        Agent::Npm => "npm",
+        Agent::Yarn => "yarn",
+        Agent::Pnpm => "pnpm",
+        Agent::Bun => "bun",
+    }
+}

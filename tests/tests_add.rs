@@ -7,12 +7,12 @@ mod shared;
 
 #[test]
 fn test_add_pure_js_dependency() -> Result<(), io::Error> {
-    for agent in Agent::all() {
+    for agent in shared::all_agents() {
         println!(
             "Testing {}",
-            agent.as_str().bg::<owo_colors::colors::BrightRed>()
+            shared::agent_as_str(agent).bg::<owo_colors::colors::BrightRed>()
         );
-        let tmp_dir = TempDir::new(agent.as_str())?;
+        let tmp_dir = TempDir::new(shared::agent_as_str(agent))?;
         let cwd = tmp_dir.into_path();
         println!("Working dir: {}", &cwd.display());
 
@@ -32,12 +32,12 @@ fn test_add_pure_js_dependency() -> Result<(), io::Error> {
 
 #[test]
 fn test_add_typescript_dependency() -> Result<(), io::Error> {
-    for agent in Agent::all() {
+    for agent in shared::all_agents() {
         println!(
             "Testing {}",
-            agent.as_str().bg::<owo_colors::colors::BrightRed>()
+            shared::agent_as_str(agent).bg::<owo_colors::colors::BrightRed>()
         );
-        let tmp_dir = TempDir::new(agent.as_str())?;
+        let tmp_dir = TempDir::new(shared::agent_as_str(agent))?;
         let cwd = tmp_dir.into_path();
         println!("Working dir: {}", &cwd.display());
         shared::bash(&cwd, shared::agent_to_init_command(agent).as_str());
